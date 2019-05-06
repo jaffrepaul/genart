@@ -2,6 +2,7 @@ const canvasSketch = require('canvas-sketch');
 /* lerp = linear interpolation -> give grid a margin using 
 min,max bounds & a num between min&max */
 const { lerp } = require('canvas-sketch-util/math');
+const random = require('canvas-sketch-util/random');
 
 const settings = {
     dimensions: [2048, 2048]
@@ -10,7 +11,7 @@ const settings = {
 const sketch = () => {
     const createGrid = () => {
         const points = [];
-        const count = 5;
+        const count = 40;
 
         for (let x = 0; x < count; x++) {
             for (let y = 0; y < count; y++) {
@@ -22,7 +23,15 @@ const sketch = () => {
         return points;
     };
 
-    const points = createGrid();
+    /*
+     * set deterministic seed (randomization value) so abstract pattern persists
+     * on page refresh, must be set before using random module
+     * then, create grid & randomly pull out cells for abstract pattern ->
+     * use random module to work with setSeed, otherwise pattern will be truly
+     * random on every page refresh with native Math.random()
+     */
+    random.setSeed(10);
+    const points = createGrid().filter(() => random.value() > 0.5);
     const margin = 400;
 
     return ({ context, width, height }) => {
@@ -34,9 +43,9 @@ const sketch = () => {
             const y = lerp(margin, width - margin, v);
 
             context.beginPath();
-            context.arc(x, y, 100, 0, Math.PI * 2, false);
+            context.arc(x, y, 10, 0, Math.PI * 2, false);
             context.strokeStyle = 'black';
-            context.lineWidth = 40;
+            context.lineWidth = 10;
 
             context.stroke();
         });
