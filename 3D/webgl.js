@@ -1,5 +1,6 @@
 const canvasSketch = require('canvas-sketch');
 const random = require('canvas-sketch-util/random');
+const palettes = require('nice-color-palettes');
 
 // Ensure ThreeJS is in global scope for the 'examples/'
 global.THREE = require('three');
@@ -36,30 +37,35 @@ const sketch = ({ context }) => {
   // Setup your scene
   const scene = new THREE.Scene();
 
+  const palette = random.pick(palettes);
+
   const box = new THREE.BoxGeometry(1, 1, 1);
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 40; i++) {
     const mesh = new THREE.Mesh(
       box,
-      new THREE.MeshPhysicalMaterial({
-        color: 'white',
-        roughness: 0.75,
-        flatShading: true
+      new THREE.MeshStandardMaterial({
+        color: random.pick(palette),
       })
     );
     mesh.position.set(
+      random.range(-1, 1),  // x
+      random.range(-1, 1),  // y
+      random.range(-1, 1)   // z
+    );
+    mesh.scale.set(
       random.range(-1, 1),
       random.range(-1, 1),
       random.range(-1, 1)
     );
-    mesh.scale.multiplyScalar(0.15);
+    mesh.scale.multiplyScalar(0.5);
     scene.add(mesh);    
   }
 
-  // Specify an ambient/unlit colour
+  // Specify an ambient/unlit colour for shadow illumination
   scene.add(new THREE.AmbientLight('#59314f'));
 
   // Add some light
-  const light = new THREE.PointLight('#45caf7', 1, 15.5);
+  const light = new THREE.DirectionalLight('white', 1);
   light.position.set(2, 2, -4).multiplyScalar(1.5);
   scene.add(light);
 
