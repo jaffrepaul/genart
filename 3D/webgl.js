@@ -9,6 +9,9 @@ global.THREE = require('three');
 require('three/examples/js/controls/OrbitControls');
 
 const settings = {
+  dimensions: [512, 512],
+  fps: 24,
+  duration: 4,
   // Make the loop animated
   animate: true,
   // Get a WebGL canvas rather than 2D
@@ -99,8 +102,8 @@ const sketch = ({ context }) => {
       camera.updateProjectionMatrix();
     },
     // Update & render your scene here
-    render ({ time }) {
-      // mesh.rotation.y = time * (10 * Math.PI / 180);
+    render ({ playhead }) {
+      scene.rotation.y = playhead * Math.PI * 2;
       // controls.update();
       renderer.render(scene, camera);
     },
